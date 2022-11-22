@@ -6,22 +6,67 @@ const Header = () => {
     const [title,setTitle] = useState()
     const [bloginfo,setDescription] = useState()
     const [userid,setUserid] = useState()
+    
 
 
-    const onSubmitForm= async (e)=>{
+
+  const onSubmitForm= async (e)=>{
+      console.log("before prevent default");
+      // e.preventDefault();
         try {
-            const body={author,title,bloginfo,userid};
+      console.log("inside try catch");
+          
+            const body={title,bloginfo,userid};
             const response=await fetch("http://localhost:8000/addblog",{
                 method:"POST",
                 headers:{"Content-Type":"application/json"},
                 body:JSON.stringify(body)
             })
+        console.log("responses",response);
+
             //  window.location="/";
         } catch (error) {
             console.error(error.message);
         }
     }
-   
+  //  function for getvalues from the selected items
+    const OnDropDownChange=()=> {
+     var selectedValue = document.getElementById("dropId").value;
+    
+      var tokens = selectedValue.split(',');
+
+      // get user id on userid text
+      setUserid(tokens[0]);
+      
+      // get user name on author 
+      setAuthor(tokens[1]);
+
+      
+  }
+
+    // Function for dropdown data 
+    const [infoBlog ,setBlogInfo]=useState([]);
+
+        const renderBlog=async()=>{
+            try {
+                const response= await fetch("http://localhost:8000/getUser");
+                 const jsonData=await response.json();
+                setBlogInfo(jsonData)
+        
+            } catch (error) {
+                console.log(error.message);
+            }
+        }
+    
+
+    useEffect(()=>{
+        renderBlog();
+    },[]);
+
+    console.log("dropdown:",infoBlog);
+
+    
+
         return (
             <div>
                      {/* Heading-Start  */}
@@ -52,11 +97,22 @@ const Header = () => {
                     </div>
                         {/* Heading-End  */}
 
-                            {/* add block secti</div>on  */}
+                            {/* add blog secti</div>  */}
 
                             <div className="flex items-center justify-center p-12">
   <div className="mx-auto w-full max-w-[550px]">
+
+  <select id ="dropId" onChange={OnDropDownChange}>
+  {infoBlog.map(element=>(
+    <option value={
+        [element.userid,
+        element.username]
+      }>{element.username}</option>
+    ))}
+  </select>
+  
     <form onSubmit={onSubmitForm}>
+  
       <div className="mb-5">
         <label
           htmlFor="name"
@@ -71,6 +127,7 @@ const Header = () => {
           placeholder="Enter author name"
           className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
           value={author}
+          
           onChange={e=>setAuthor(e.target.value)}
         />
       </div>
@@ -89,6 +146,7 @@ const Header = () => {
           placeholder="Enter blog title"
           className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
           value={userid}
+          
           onChange={e=>setUserid(e.target.value)}
         />
       </div>
