@@ -11,10 +11,10 @@ const Header = () => {
 
 
   const onSubmitForm= async (e)=>{
-      console.log("before prevent default");
+     
       // e.preventDefault();
         try {
-      console.log("inside try catch");
+     
           
             const body={title,bloginfo,userid};
             const response=await fetch("http://localhost:8000/addblog",{
@@ -22,7 +22,7 @@ const Header = () => {
                 headers:{"Content-Type":"application/json"},
                 body:JSON.stringify(body)
             })
-        console.log("responses",response);
+        
 
             //  window.location="/";
         } catch (error) {
@@ -63,7 +63,7 @@ const Header = () => {
         renderBlog();
     },[]);
 
-    console.log("dropdown:",infoBlog);
+    
 
     
 
@@ -104,7 +104,9 @@ const Header = () => {
 
   <select id ="dropId" onChange={OnDropDownChange}>
   {infoBlog.map(element=>(
-    <option value={
+    <option 
+    key={element.userid}
+    value={
         [element.userid,
         element.username]
       }>{element.username}</option>
